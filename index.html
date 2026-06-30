@@ -68,14 +68,4 @@
   function doSearch() {
     const q = document.getElementById('question').value.trim();
     if (!q) return;
-    const url = "https://www.google.com/search?q=" + encodeURIComponent(q);
-    window.open(url, "_blank");
-  }
-
-  document.getElementById('question').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') doSearch();
-  });
-</script>
-
-</body>
-</html>
+    const url =
