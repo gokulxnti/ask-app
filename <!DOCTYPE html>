@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Ask App" />
+<title>Ask App</title>
+<style>
+  body { font-family: -apple-system, sans-serif; background: #f5f5f7; margin: 0; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; }
+  h1 { font-size: 22px; color: #222; margin-bottom: 16px; }
+  .box { background: white; border-radius: 16px; padding: 20px; width: 100%; max-width: 480px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  input { width: 100%; padding: 14px; font-size: 16px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; margin-bottom: 12px; }
+  button { width: 100%; padding: 14px; font-size: 16px; background: #2563eb; color: white; border: none; border-radius: 10px; cursor: pointer; }
+  .results { margin-top: 16px; }
+  .result-item { background: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); cursor: pointer; }
+  .result-title { color: #2563eb; font-size: 16px; font-weight: bold; margin-bottom: 4px; }
+  .result-snippet { color: #555; font-size: 13px; }
+  .result-url { color: #aaa; font-size: 11px; margin-top: 4px; }
+  .loading { text-align: center; color: #888; margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>📱 Ask App</h1>
+<div class="box">
+  <input type="text" id="question" placeholder="Type your question..." />
+  <button onclick="doSearch()">Search</button>
+  <div class="results" id="results"></div>
+</div>
+<script>
+  const API_KEY = "AIzaSyApXB_QT4TAWABhCFv7ruqzNhUGGPou_RY";
+  const CX = "c0eda3689352d4f2e";
+
+  async function doSearch() {
+    const q = document.getElementById('question').value.trim();
+    if (!q) return;
+
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
+
+    try {
+      const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!data.items || data.items.length === 0) {
+        resultsDiv.innerHTML = '<div class="loading">No results found.</div>';
+        return;
+      }
+
+      resultsDiv.innerHTML = data.items.map(item => `
+        <div class="result-item" onclick="window.location.href='${item.link}'">
+          <div class="result-title">${item.title}</div>
+          <div class="result-snippet">${item.snippet || ''}</div>
+          <div class="result-url">${item.displayLink}</div>
+        </div>
+      `).join('');
