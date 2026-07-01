@@ -55,3 +55,14 @@
           <div class="result-url">${item.displayLink}</div>
         </div>
       `).join('');
+    } catch(e) {
+      resultsDiv.innerHTML = '<div class="loading">Error. Try again.</div>';
+    }
+  }
+
+  document.getElementById('question').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') doSearch();
+  });
+</script>
+</body>
+</html>
